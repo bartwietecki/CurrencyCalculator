@@ -25,16 +25,32 @@ public class CurrencyParser {
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
             Document document = documentBuilder.parse(new File(FILE));
             NodeList nodeList = document.getElementsByTagName("Cube");
+
             for (int i = 0; i < nodeList.getLength(); i++) {
                 NamedNodeMap attributes = nodeList.item(i).getAttributes();
                 Node currencyName = attributes.getNamedItem("currency");
                 Node currencyRate = attributes.getNamedItem("rate");
-                if (currencyName != null) {
-                    currencies.put(currencyName.getTextContent(), Double.valueOf(currencyRate.getTextContent()));
+
+                if (currencyName != null && currencyRate != null) {
+                    String name = currencyName.getTextContent();
+                    String rateValue = currencyRate.getTextContent();
+
+                    try {
+                        double rate = Double.parseDouble(rateValue);
+                        currencies.put(name, rate);
+                    } catch (NumberFormatException e) {
+                        System.err.println("Invalid rate value for currency: " + name);
+                    }
+                } else {
+                    System.err.println("Incomplete currency data at index: " + i);
                 }
             }
-        } catch (ParserConfigurationException | IOException | SAXException e) {
-            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            System.err.println("Error creating document builder: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        } catch (SAXException e) {
+            System.err.println("Error parsing XML: " + e.getMessage());
         }
 
         return currencies;
