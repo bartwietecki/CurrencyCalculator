@@ -9,21 +9,30 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CurrencyParser {
 
     private static final String FILE = "currency.xml";
+    private static final DocumentBuilder DOCUMENT_BUILDER;
+
+    static {
+        try {
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DOCUMENT_BUILDER = documentBuilderFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new IllegalStateException("Error creating document builder: " + e.getMessage());
+        }
+    }
 
     public static Map<String, Double> parse() {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder;
         Map<String, Double> currencies = new HashMap<>();
 
         try {
-            documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document document = documentBuilder.parse(new File(FILE));
+            InputStream inputStream = CurrencyParser.class.getClassLoader().getResourceAsStream(FILE);
+            Document document = DOCUMENT_BUILDER.parse(inputStream);
             NodeList nodeList = document.getElementsByTagName("Cube");
 
             for (int i = 0; i < nodeList.getLength(); i++) {
@@ -45,8 +54,6 @@ public class CurrencyParser {
                     System.err.println("Incomplete currency data at index: " + i);
                 }
             }
-        } catch (ParserConfigurationException e) {
-            System.err.println("Error creating document builder: " + e.getMessage());
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         } catch (SAXException e) {
