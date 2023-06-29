@@ -1,5 +1,6 @@
 public enum Currency {
     USD("US Dollar"),
+    EUR("Euro"),
     JPY("Japanese Yen"),
     BGN("Bulgarian Lev"),
     DKK("Danish Krone"),
@@ -39,5 +40,14 @@ public enum Currency {
 
     public String getFullName() {
         return fullName;
+    }
+
+    public static boolean contains(String currencyName) {
+        for (Currency currency : values()) {
+            if (currency.name().equalsIgnoreCase(currencyName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

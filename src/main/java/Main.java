@@ -13,18 +13,33 @@ public class Main {
             System.out.println(currency.name() + " - " + currency.getFullName());
         }
 
+        System.out.println();
+
+        System.out.println("Welcome to Currency Calculator! Feel free to make as much calculations as you want!");
+        System.out.println("(If you want to leave Currency Calculator type 'EXIT')");
+
+        System.out.println();
+
         boolean running = true;
         while (running) {
-            System.out.println("What currency would you like to change your Euro funds to?");
-            String currencyName = scanner.nextLine().toUpperCase();
+            System.out.println("Enter the source currency:");
+            String sourceCurrencyName = scanner.nextLine().toUpperCase();
 
-            if (currencyName.equals("EXIT")) {
+            if (sourceCurrencyName.equals("EXIT")) {
                 running = false;
                 break;
             }
 
-            if (!currencyMap.containsKey(currencyName)) {
-                System.out.println("Invalid currency. Please enter a valid currency");
+            if (!Currency.contains(sourceCurrencyName)) {
+                System.out.println("Invalid source currency. Please enter a valid currency");
+                continue;
+            }
+
+            System.out.println("Enter the target currency:");
+            String targetCurrencyName = scanner.nextLine().toUpperCase();
+
+            if (!Currency.contains(targetCurrencyName)) {
+                System.out.println("Invalid target currency. Please enter a valid currency");
                 continue;
             }
 
@@ -41,8 +56,8 @@ public class Main {
                 continue;
             }
 
-            double amount = calculator.calculate(currencyAmount, currencyName);
-            System.out.println("Calculated value: " + amount + " " + currencyName);
+            double amount = calculator.calculate(currencyAmount, sourceCurrencyName, targetCurrencyName);
+            System.out.println("Calculated value: " + amount + " " + targetCurrencyName);
         }
 
         System.out.println("Exiting the program. Goodbye!");

@@ -10,26 +10,21 @@ public class Calculator {
         this.currencyMap = currencyMap;
     }
 
-    public double calculate (double amountEuro, String currencyName) {
-        String currency = getCurrency(currencyName);
-        Double rate = currencyMap.get(currency);
+    public double calculate (double amount, String sourceCurrency, String targetCurrency ) {
+        Double sourceRate = currencyMap.get(sourceCurrency);
+        Double targetRate = currencyMap.get(targetCurrency);
 
-        if (rate == null) {
-            System.out.println("Currency not found " + currencyName);
+        if (sourceRate == null || targetRate == null) {
+            System.out.println("Currency not found.");
             return 0.0;
         }
 
-        BigDecimal rateBigDecimal = BigDecimal.valueOf(rate);
-        BigDecimal amount = rateBigDecimal.multiply(BigDecimal.valueOf(amountEuro));
-        amount = amount.setScale(2, RoundingMode.HALF_UP);
-        return amount.doubleValue();
-    }
+        BigDecimal sourceRateBigDecimal = BigDecimal.valueOf(sourceRate);
+        BigDecimal targetRateBigDecimal = BigDecimal.valueOf(targetRate);
+        BigDecimal amountBigDecimal = BigDecimal.valueOf(amount);
 
-    private String getCurrency(String currencyName) {
-        return currencyMap.keySet()
-                .stream()
-                .filter(currency -> currency.equals(currencyName))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Currency " + currencyName + " do not exist."));
+        BigDecimal convertedAmount = amountBigDecimal.multiply(targetRateBigDecimal).divide(sourceRateBigDecimal, 2, RoundingMode.HALF_UP);
+        return convertedAmount.doubleValue();
+
     }
 }
