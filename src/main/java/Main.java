@@ -8,7 +8,12 @@ public class Main {
         Map<String, Double> currencyMap = CurrencyParser.parse();
         Calculator calculator = new Calculator(currencyMap);
 
-        System.out.println("For which currency would you like to count?");
+        System.out.println("Available currencies");
+        for (Currency currency : Currency.values()) {
+            System.out.println(currency.name() + " - " + currency.getFullName());
+        }
+
+        System.out.println("What currency would you like to change your Euro funds to?");
         String currencyName = scanner.nextLine().toUpperCase();
         System.out.println("Enter the quantity");
         Double currencyAmount = Double.valueOf(scanner.nextLine());
