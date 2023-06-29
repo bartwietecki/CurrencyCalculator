@@ -13,12 +13,38 @@ public class Main {
             System.out.println(currency.name() + " - " + currency.getFullName());
         }
 
-        System.out.println("What currency would you like to change your Euro funds to?");
-        String currencyName = scanner.nextLine().toUpperCase();
-        System.out.println("Enter the quantity");
-        Double currencyAmount = Double.valueOf(scanner.nextLine());
+        boolean running = true;
+        while (running) {
+            System.out.println("What currency would you like to change your Euro funds to?");
+            String currencyName = scanner.nextLine().toUpperCase();
 
-        double amount = calculator.calculate(currencyAmount, currencyName);
-        System.out.println("Calculated value: " + amount + " " + currencyName);
+            if (currencyName.equals("EXIT")) {
+                running = false;
+                break;
+            }
+
+            if (!currencyMap.containsKey(currencyName)) {
+                System.out.println("Invalid currency. Please enter a valid currency");
+                continue;
+            }
+
+            System.out.println("Enter the quantity");
+            double currencyAmount;
+            try {
+                currencyAmount = Double.parseDouble(scanner.nextLine());
+                if (currencyAmount <= 0) {
+                    System.out.println("Invalid amount. Please enter a positive number");
+                    continue;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid amount. Please enter a valid number");
+                continue;
+            }
+
+            double amount = calculator.calculate(currencyAmount, currencyName);
+            System.out.println("Calculated value: " + amount + " " + currencyName);
+        }
+
+        System.out.println("Exiting the program. Goodbye!");
     }
 }
