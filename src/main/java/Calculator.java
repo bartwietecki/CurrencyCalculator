@@ -1,3 +1,5 @@
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 
 public class Calculator {
@@ -11,12 +13,16 @@ public class Calculator {
     public double calculate (double amountEuro, String currencyName) {
         String currency = getCurrency(currencyName);
         Double rate = currencyMap.get(currency);
-        double amount = rate * amountEuro;
-        return getRoundedValue(amount);
-    }
 
-    private double getRoundedValue(double amount) {
-        return Math.round(amount * 100.0) / 100.0;
+        if (rate == null) {
+            System.out.println("Currency not found " + currencyName);
+            return 0.0;
+        }
+
+        BigDecimal rateBigDecimal = BigDecimal.valueOf(rate);
+        BigDecimal amount = rateBigDecimal.multiply(BigDecimal.valueOf(amountEuro));
+        amount = amount.setScale(2, RoundingMode.HALF_UP);
+        return amount.doubleValue();
     }
 
     private String getCurrency(String currencyName) {
